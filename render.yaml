@@ -1,15 +1,17 @@
 services:
   - type: web
+    name: n8n-service
     plan: free
     runtime: image
-    name: n8n-service
     image:
       url: docker.io/n8nio/n8n:latest
 
     envVars:
+      # Chave de criptografia do n8n (Render gera automaticamente)
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
 
+      # Configuração do banco Postgres do Render
       - key: DB_TYPE
         value: postgresdb
       - key: DB_POSTGRESDB_DATABASE
@@ -29,12 +31,23 @@ services:
           name: n8n-db
           property: user
 
+      # ============================
+      # 🔥 CONFIGURAÇÃO MCP (Lovable)
+      # ============================
+
+      # Porta pública — Render usa essa porta para expor o serviço
       - key: PORT
         value: "3001"
+
+      # Ativa o MCP Server dentro do n8n
       - key: N8N_MCP_ENABLED
         value: "true"
+
+      # O MCP precisa escutar em 0.0.0.0 para ser acessível externamente
       - key: N8N_MCP_HOST
         value: "0.0.0.0"
+
+      # MCP usa a mesma porta que o Render expõe
       - key: N8N_MCP_PORT
         value: "3001"
 
